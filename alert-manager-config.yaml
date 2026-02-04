@@ -5,12 +5,12 @@ metadata:
   namespace: alert-test
 spec:
   receivers:
-    - name: alert-test-receiver
+    - name: alert-test-webhook
       webhookConfigs:
         - url: http://receiver.alert-test.svc:8080/
           sendResolved: true
   route:
-    receiver: alert-test-receiver
+    receiver: alert-test-webhook
     matchers:
       - name: namespace
         matchType: =
