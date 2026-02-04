@@ -1,0 +1,31 @@
+apiVersion: monitoring.coreos.com/v1beta1
+kind: AlertmanagerConfig
+metadata:
+  name: alert-test-webhook
+  namespace: alert-test
+spec:
+  receivers:
+    - name: alert-test-webhook
+
+    - name: alert-test-email
+      emailConfigs:
+        - to: you@example.com
+          from: alerts@example.com
+          smarthost: smtp.example.com:587
+          authUsername: alerts@example.com
+          authPassword:
+            name: smtp-auth
+            key: password
+          requireTLS: true
+          sendResolved: true
+  route:
+    receiver: alert-test-webhook
+    matchers:
+      - name: namespace
+        matchType: =
+        value: alert-test
+      - name: severity
+        matchType: =~
+        value: critical|warning
+    routes:
+      - receiver: alert-test-email

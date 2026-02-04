@@ -1,0 +1,24 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: alert-test-pod-crashlooping
+  namespace: alert-test
+spec:
+  groups:
+    - name: alert-test.pod.rules
+      rules:
+        - alert: KubePodCrashLooping-alert-test
+          annotations:
+            summary: Pod is crashlooping in alert-test
+            description: Pod {{$labels.pod}} container {{$labels.container}} is in CrashLoopBackOff.
+          expr: |
+            max_over_time(
+              kube_pod_container_status_waiting_reason{
+                job="kube-state-metrics",
+                namespace="alert-test",
+                reason="CrashLoopBackOff"
+              }[1m]
+            ) >= 1
+          for: 30s
+          labels:
+            severity: critical

@@ -1,0 +1,20 @@
+apiVersion: monitoring.coreos.com/v1beta1
+kind: AlertmanagerConfig
+metadata:
+  name: alert-test-webhook
+  namespace: alert-test
+spec:
+  receivers:
+    - name: alert-test-receiver
+      webhookConfigs:
+        - url: http://receiver.alert-test.svc:8080/
+          sendResolved: true
+  route:
+    receiver: alert-test-receiver
+    matchers:
+      - name: namespace
+        matchType: =
+        value: alert-test
+      - name: severity
+        matchType: =~
+        value: critical|warning

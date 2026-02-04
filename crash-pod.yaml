@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: crashloop-test
+  namespace: alert-test
+spec:
+  restartPolicy: Always
+  containers:
+  - name: boom
+    image: registry.access.redhat.com/ubi9/ubi-minimal
+    command: ["/bin/sh","-c"]
+    args: ["echo 'crashing on purpose'; exit 1"]
